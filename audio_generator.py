@@ -13,7 +13,6 @@ def num2cn(num):
 
     chinese_str = ''
     num_str = str(num)
-
     # 处理整数部分
     integer_part = int(abs(num))
     if integer_part == 0:
@@ -48,10 +47,14 @@ def num2cn(num):
 
     return chinese_str
 
-def save(input,filename):
-    if os.access(f'./laser-audio/number2/{filename}.wav', os.F_OK):
+def save(input,filepath,filename):
+    if os.access(f'{filepath}/{filename}.wav', os.F_OK):
         print("Given file path is exist.")
         return "audio exist"
+     # 判断目录是否存在
+    if not os.path.exists(filepath):
+        # 如果目录不存在，则创建目录
+        os.makedirs(filepath)
 
     executor(
         input=input,
@@ -59,17 +62,52 @@ def save(input,filename):
         port=8092,
         protocol="http",
         spk_id=0,
-        output=f'./laser-audio/number2/{filename}.wav',
+        output=f'{filepath}/{filename}.wav',
         play=False)
     return "success"
 
-#for i in range(0,180,1):
-#    save(str(i),str(i))
+def save_latlng(filepath='laser-audio/latlng'):
+    # integer place
+    for i in range(0,180,1):
+        save(num2cn(i),filepath,str(i))
 
-#for i in range(1000):
-#    s = '点'+'{:03d}'.format(i)
-#    name = 'dian'+'{:03d}'.format(i)
-#    save(s,name)
+    # 3 decimal place
+    for i in range(1000):
+        s = '点'+'{:03d}'.format(i)
+        name = 'dian'+'{:03d}'.format(i)
+        save(s,filepath,name)
 
-for i in range(12578,65535):
-    save(num2cn(i),i)
+def save_number(filepath='laser-audio/number'):
+    #solider number in range 1-65535
+    for i in range(1,65535):
+        save(num2cn(i),filepath,i)
+
+def save_regular(filepath='laser-audio/regular2'):
+    save('结束训练',filepath,'jieshuxunlian')
+    save('开始训练',filepath,'kaishixunlian')
+    save('红队的',filepath,'hongduide')
+    save('红队',filepath,'hongdui')
+    save('蓝队的',filepath,'landuide')
+    save('蓝队',filepath,'landui')
+    save('的',filepath,'de')
+    save('号的',filepath,'haode')
+    save('号击中了',filepath,'haojizhongle')
+    save('号上线',filepath,'haoshangxian')
+    save('号移动至',filepath,'haoyidongzhi')
+    save('坐标为',filepath,'zuobiaowei')
+
+    save('友伤',filepath,'youshang')
+    # hit part
+    save('头部',filepath,'toubu')
+    save('腹部',filepath,'fubu')
+    save('背甲',filepath,'beijia')
+    save('前甲',filepath,'qianjia')
+    save('后甲',filepath,'houjia')
+    save('右脚',filepath,'youjiao')
+    save('右手',filepath,'youshou')
+    save('左脚',filepath,'zuojiao')
+    save('左手',filepath,'zuoshou')
+
+save_regular()
+save_latlng()
+save_number()
